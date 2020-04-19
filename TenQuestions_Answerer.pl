@@ -131,7 +131,9 @@ get_attributes(X, L) :-
     X = mewtwo -> mewtwo(L);
     X = charizard -> charizard(L);
     X = haunter -> haunter(L);
-    X = goldeen -> goldeen(L).
+    X = goldeen -> goldeen(L);
+    X = kadabra -> kadabra(L);
+    X = electrode -> electrode(L).
 
 % Global Counter (not in use)
 :- dynamic(qn_counter/1).  % allow counter to be set at runtime
@@ -156,9 +158,11 @@ mewtwo([psychic, monotype, legendary, purple, upright, does_not_evolve, mega_var
 charizard([fire, flying, red, upright, stage_final, mega_variant, blaze]).
 haunter([ghost, poison, purple, arms, stage_intermediate, evolve_by_trade, levitate]).
 goldeen([water, monotype, fish, red, stage_basic, evolve_by_level, swift_swim]).
+kadabra([psychic, monotype, upright, brown, stage_intermediate, evolve_by_trade, synchronize]).
+electrode([electric, monotype, ball, red, stage_final, static]).
 
 % List of possible Pokemon
-selection_list([pikachu, lapras, mewtwo, charizard, haunter, goldeen]).
+selection_list([pikachu, lapras, mewtwo, charizard, haunter, goldeen, kadabra, electrode]).
 
 question_options([monotype, type1, type2, legendary, colour, body_shape, stage, evolve_by, ability, variants]).
 
