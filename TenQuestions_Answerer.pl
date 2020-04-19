@@ -1,3 +1,9 @@
+run() :-
+    % assert that it is the user's first time
+    assert(first_time()),
+    % start the dialogue
+    start().
+
 start() :-
     % start a new game
     (   first_time() -> write('Hey! Would you like to play Ten Questions with me?');
@@ -9,7 +15,9 @@ start() :-
         (  first_time() ->
             write('Aww, okay, goodbye then.');
             write('Thanks for playing with me! Goodbye!')
-         );
+         ),
+        retractall(first_time())
+        ;
         Option==y -> start_game()
     ).
 
