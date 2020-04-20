@@ -134,7 +134,7 @@ is([monotype, legendary]).
 has([mega-variant]).
 type([electric, water, psychic, fire, grass, flying, ghost, poison, rock, ground]).
 shape([quadruped, fish, upright, arms, ball, wings]).
-stage([stage-basic, stage-intermediate, stage-final]).
+stage([basic, intermediate, final]).
 evolveby([does-not-evolve, evolves-by-stone, evolves-by-level, evolves-by-trade]).
 ability([static, water-absorb, pressure, blaze, levitate, swift-swim, synchronize, inner-focus]).
 
@@ -191,5 +191,6 @@ random_selection(X) :-
 
 % fact: for program to know whether it's the first run.
 first_time().
+% allow program to assert/retract first_time
 :- dynamic(first_time/0).
 
