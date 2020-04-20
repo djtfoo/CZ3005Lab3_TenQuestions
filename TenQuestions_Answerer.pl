@@ -187,7 +187,7 @@ selection_list([pikachu, lapras, mewtwo, charizard, haunter, goldeen, kadabra, e
 random_selection(X) :-
     selection_list(L), random_member(X, L).
 
-% allow selected Pokemon to be set at runtime
+% allow selected Pokemon to be asserted/retracted at runtime
 :- dynamic(selected/1).
 
 % fact: for program to know whether it's the first run.
