@@ -1,26 +1,30 @@
+% To be called to start the program
 run() :-
     % assert that it is the user's first time
     assert(first_time()),
     % start the dialogue
     start().
 
+% Start the conversation for a game round
 start() :-
     % start a new game
     (   first_time() -> write('Hey! Would you like to play Ten Questions with me?');
         write('Would you like to play again?')
     ),
     write(' (y/n) : '),
+    % get user's response
     read(Option),
-    (   Option==n ->
+    (   Option==n ->  % user does not wish to play
         (  first_time() ->
             write('Aww, okay, goodbye then.');
             write('Thanks for playing with me! Goodbye!')
          ),
         retractall(first_time())
-        ;
+        ;  % user wishes to play
         Option==y -> start_game()
     ).
 
+% Start a game round
 start_game() :-
     % say a different message just for the first time
     (   first_time() ->
@@ -31,6 +35,7 @@ start_game() :-
     % prompt for user to be ready
     write(' (I\'m ready!) '),
     read(Option),
+    % no longer the player's first_time
     retractall(first_time()),
     % initialize game - choose a Pokemon
     init_game(),
@@ -45,14 +50,13 @@ start_game() :-
 
 % Game loop to ask for question and wait for answer
 game_loop(C) :-
-    % Check counter to see if 10 questions have been used up
-    %qn_counter(C),  % global counter
-    % if user has asked 10 questions already
-    C == 0 ->
+    % check if user has asked 10 questions already
+    C == 0 ->  % user has ran out of questions
     (
+        % prompt user to guess
         write('\nAlright, you\'ve used up all your questions! Try making a guess now!\n(Guess the Pokemon) '),
-        read(Guess),
-        check_guess(Guess),
+        read(Guess),  % read user's guess
+        check_guess(Guess),  % check user's guess and print response
         write('\n\n'),
         % restart game
         start()
@@ -66,7 +70,8 @@ game_loop(C) :-
         read(X),
         (
             % first, check if user made a correct guess
-            selected(X) -> write('Correct! Great job!\n\n'),
+            selected(X) ->   % user is correct
+            write('Correct! Great job!\n\n'),  % user's response
             % start a new round
             start()
          ;
@@ -76,7 +81,7 @@ game_loop(C) :-
             (
                member(X, L) -> Truth = true; Truth = false
             ),
-            % print response to user
+            % print response to user's question
             print_response(X, Truth),
             write('\n'),
 
@@ -93,9 +98,8 @@ check_guess(X) :-
         write('Wrong! It was '), selected(Y), write(Y)
     ).
 
-% Prints all attribute options from Pokemon options
+% Prints all possible options user can ask
 list_options() :-
-    %question_options(X), write(X).
     all_options(X), write(X).
 
 % Randomly selects a Pokemon and starts a new round of Ten Questions.
@@ -109,6 +113,7 @@ init_game() :-
 
 % get attributes of the selected Pokemon
 get_attributes(X, L) :-
+    % if X = <pokemon name>, return that Pokemon's attributes
     X = pikachu -> pikachu(L);
     X = lapras -> lapras(L);
     X = mewtwo -> mewtwo(L);
@@ -119,27 +124,13 @@ get_attributes(X, L) :-
     X = electrode -> electrode(L);
     X = zubat -> zubat(L).
 
-% Call for counting down a value
+% Counts down a value C0 and returns C
 countdown(C0, C) :-
     C is C0 - 1.
 
-% Facts about the possible Pokemon
-pikachu([electric, monotype, yellow, quadruped, basic, evolves-by-stone, static]).
-lapras([water, monotype, blue, fish, final, does-not-evolve, water-absorb]).
-mewtwo([psychic, monotype, legendary, purple, upright, final, does-not-evolve, mega-variant, pressure]).
-charizard([fire, flying, red, upright, final, does-not-evolve, mega-variant, blaze]).
-haunter([ghost, poison, purple, arms, intermediate, evolves-by-trade, levitate]).
-goldeen([water, monotype, fish, red, basic, evolves-by-level, swift-swim]).
-kadabra([psychic, monotype, upright, brown, intermediate, evolves-by-trade, synchronize]).
-electrode([electric, monotype, ball, red, final, does-not-evolve, static]).
-zubat([poison, flying, wings, purple, basic, evolves-by-level, inner-focus]).
-
-% List of possible Pokemon
-selection_list([pikachu, lapras, mewtwo, charizard, haunter, goldeen, kadabra, electrode, zubat]).
-
-% Possible Pokemon attributes (may or may not apply to any Pokemon)
+% Possible Pokemon attributes
 colour([red, yellow, blue, green, brown, purple]).
-booleans([monotype, legendary]).
+is([monotype, legendary]).
 has([mega-variant]).
 type([electric, water, psychic, fire, grass, flying, ghost, poison, rock, ground]).
 shape([quadruped, fish, upright, arms, ball, wings]).
@@ -148,8 +139,8 @@ evolveby([does-not-evolve, evolves-by-stone, evolves-by-level, evolves-by-trade]
 ability([static, water-absorb, pressure, blaze, levitate, swift-swim, synchronize, inner-focus]).
 
 % List of attributes available for guessing
-all_options(X) :-  %X = the list of ALL options
-    colour(A), booleans(B), append(A, B, Temp),
+all_options(X) :-  % X = a list containing ALL attributes
+    colour(A), is(B), append(A, B, Temp),
     has(C), append(Temp, C, Temp2),
     type(D), append(Temp2, D, Temp3),
     shape(E), append(Temp3, E, Temp4),
@@ -162,7 +153,7 @@ print_response(X, IsCorrect) :-
     % if user asked about a colour, print this response
     colour(L1), member(X, L1), (IsCorrect=true -> write('Yes, its colour is '); write('No, its colour is not ')),write(X), write('.');
     % if user asked about a boolean, print this response
-    booleans(L2), member(X, L2), (IsCorrect=true -> write('Yes, it is '); write('No, it is not ')), write(X), write('.');
+    is(L2), member(X, L2), (IsCorrect=true -> write('Yes, it is '); write('No, it is not ')), write(X), write('.');
     % if user asked about some trait the Pokemon has, print this response
     has(L3), member(X, L3), (IsCorrect=true -> write('Yes, it has '); write('No, it does not have ')), write(X), write('.');
     % if user asked about the Pokemon type, print this response
@@ -177,6 +168,19 @@ print_response(X, IsCorrect) :-
     ability(L8), member(X, L8), (IsCorrect=true -> write('Yes, its ability is '); write('No, its ability is not ')), write(X), write('.');
     write('Hey, ask me something only from the list!').
 
+% Facts about the possible Pokemon
+pikachu([electric, monotype, yellow, quadruped, basic, evolves-by-stone, static]).
+lapras([water, monotype, blue, fish, final, does-not-evolve, water-absorb]).
+mewtwo([psychic, monotype, legendary, purple, upright, final, does-not-evolve, mega-variant, pressure]).
+charizard([fire, flying, red, upright, final, does-not-evolve, mega-variant, blaze]).
+haunter([ghost, poison, purple, arms, intermediate, evolves-by-trade, levitate]).
+goldeen([water, monotype, fish, red, basic, evolves-by-level, swift-swim]).
+kadabra([psychic, monotype, upright, brown, intermediate, evolves-by-trade, synchronize]).
+electrode([electric, monotype, ball, red, final, does-not-evolve, static]).
+zubat([poison, flying, wings, purple, basic, evolves-by-level, inner-focus]).
+
+% List of possible Pokemon
+selection_list([pikachu, lapras, mewtwo, charizard, haunter, goldeen, kadabra, electrode, zubat]).
 
 % Generate a possible Pokemon selection
 random_selection(X) :-
