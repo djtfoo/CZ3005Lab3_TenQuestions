@@ -14,14 +14,15 @@ start() :-
     write(' (y/n) : '),
     % get user's response
     read(Option),
-    (   Option==n ->  % user does not wish to play
+    (   Option==y ->  % user wishes to play
+        start_game()
+    ;
+        % user does not wish to play
         (  first_time() ->
             write('Aww, okay, goodbye then.');
             write('Thanks for playing with me! Goodbye!')
          ),
         retractall(first_time())
-        ;  % user wishes to play
-        Option==y -> start_game()
     ).
 
 % Start a game round
