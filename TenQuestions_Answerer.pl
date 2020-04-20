@@ -50,7 +50,7 @@ game_loop(C) :-
     % if user has asked 10 questions already
     C == 0 ->
     (
-        write('\nAlright, you\'ve used up all your questions! Try making a guess now! (Guess the Pokemon) '),
+        write('\nAlright, you\'ve used up all your questions! Try making a guess now!\n(Guess the Pokemon) : '),
         read(Guess),
         check_guess(Guess),
         write('\n\n'),
@@ -152,7 +152,7 @@ counter_decr(C) :-
     assert(qn_counter(C)).  % set next counter value
 
 % Facts about the possible Pokemon
-pikachu([electric, monotype, yellow, quadruped, stage_basic, evolve_by_stone, static]).
+pikachu([electric, monotype, yellow, quadruped, stage_basic, evolve-by-stone, static]).
 lapras([water, monotype, blue, fish, does_not_evolve, water_absorb]).
 mewtwo([psychic, monotype, legendary, purple, upright, does_not_evolve, mega_variant]).
 charizard([fire, flying, red, upright, stage_final, mega_variant, blaze]).
@@ -164,7 +164,7 @@ electrode([electric, monotype, ball, red, stage_final, static]).
 % List of possible Pokemon
 selection_list([pikachu, lapras, mewtwo, charizard, haunter, goldeen, kadabra, electrode]).
 
-question_options([monotype, type1, type2, legendary, colour, body_shape, stage, evolve_by, ability, variants]).
+question_options([monotype, type1, type2, legendary, colour, body_shape, stage, evolve_by, ability, habitat]).
 
 % Possible guesses
 random_selection(X) :-
@@ -184,3 +184,4 @@ all_options(X) :-  %X = the list of ALL options
 % fact: for program to know whether it's the first run.
 first_time().
 :- dynamic(first_time/0).
+
